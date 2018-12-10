@@ -1,0 +1,35 @@
+#Food Trucks Finder  - From a command line program to a full scale web application
+
+###Scope changes
+If the FTF app is turned into a full scale web application from a command line app, there would be many use cases that
+that can be supported which can't/very hard to be supported on a command line app. One of the biggest scope change would
+be that the web app version can support multiple users at the same time by a single instance of the application. The users
+will be able to get the data over the internet which eliminates the need for installing the app on each user's machine.
+The web app can also provide more advanced user interfaces as in like providing maps to locate the food trucks, getting
+the directions from a user's current location to a food truck, allowing to select multiple food trucks and marking them as
+favorites, implementing filters based on cuisines and so on.
+
+###Technical changes
+The web application can serve multiple users at the same time by running taking the incoming requests and executing them in
+separate threads (blocking I/O) or by having a single threaded server with non blocking I/O. In this model, if the number 
+of concurrent users go up and we reach a point where one server is not able to respond to the requests in a reasonable amount
+to time, then we can scale the web server by up running multiple instances of the app. One could argue that we can support
+multiple users through a command line program also by distributing the application instances to each user. This is the 
+comparison of thick clients (standalone apps/command line apps) vs thin clients (web browsers). It is far more easy to 
+maintain and introduce new features in the app if we have thin clients whereas in case of thick clients, every time a new 
+feature is added, the app has to be redistributed to the users which is an expensive process. Further, it requires the thick
+client app to be compatible with heterogenous environments of the users' machines and thus every release of the app must be
+tested against various environments further increasing the cost. A mobile native app is also a thick client app but due to 
+limited platforms being popular (just two iOS and Android) and due to availability of auto update features on the app stores
+the redistribution of the new version becomes more manageable compared to a thick client app that needs manual update. 
+Certain features like caching, security, analytics, logging, rate limiting are much easier to implement on the server side
+than on the client side.
+
+###WhatI would do differently if I was building this app as a web app
+1. I would build a more interactive interface giving users more options as desribed in the scope changes part.
+2. I would implement a caching layer assuming that the data won't change for 24 hours and thus limit the calls to source
+3. I would implement security to avoid bot traffic, implement minor logging and analytics
+4. I would implement auto retry mechanism and max attempts in a time window if there are issues getting data from source
+   and have a closed gate for all users.
+5. When the user requests for data, I would load the data in the background so that user can continue to work with the 
+   other tasks.
